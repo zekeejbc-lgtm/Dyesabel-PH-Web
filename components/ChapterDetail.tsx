@@ -14,6 +14,8 @@ export const ChapterDetail: React.FC<ChapterDetailProps> = ({ chapter, onBack })
     window.scrollTo(0, 0);
   }, []);
 
+  const activities = chapter.activities || [];
+
   return (
     <div className="min-h-screen pt-20 pb-10">
       
@@ -67,7 +69,7 @@ export const ChapterDetail: React.FC<ChapterDetailProps> = ({ chapter, onBack })
                 <span className="w-8 h-1 bg-primary-cyan rounded-full"></span>
                 About the Chapter
               </h2>
-              <p className="text-lg text-ocean-deep/80 dark:text-gray-300 leading-relaxed">
+              <p className="text-lg text-ocean-deep/80 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                 {chapter.description || "This chapter is dedicated to environmental sustainability in its local community. Through various initiatives, volunteer work, and educational programs, we aim to make a lasting impact on our environment."}
               </p>
             </div>
@@ -81,23 +83,26 @@ export const ChapterDetail: React.FC<ChapterDetailProps> = ({ chapter, onBack })
               {/* Card Holder for Activities with Scroll */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-2 max-h-[600px] overflow-y-auto custom-scrollbar">
                 <div className="space-y-4 p-2">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="glass-card p-6 rounded-2xl flex flex-col md:flex-row gap-6 hover:bg-white/5 transition-colors group">
+                  {activities.map((activity, i) => (
+                    <div key={activity.id} className="glass-card p-6 rounded-2xl flex flex-col md:flex-row gap-6 hover:bg-white/5 transition-colors group">
                       <div className="w-full md:w-48 h-32 rounded-xl overflow-hidden flex-shrink-0">
-                        <img src={`https://picsum.photos/seed/${chapter.id}${i}/400/300`} alt="Activity" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        <img src={activity.imageUrl} alt={activity.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                       </div>
                       <div className="flex-grow">
                         <div className="flex items-center gap-2 text-primary-cyan text-sm font-bold mb-2">
                           <Calendar size={14} />
-                          <span>March {10 + i}, 2024</span>
+                          <span>{activity.date}</span>
                         </div>
-                        <h3 className="text-xl font-bold text-ocean-deep dark:text-white mb-2 group-hover:text-primary-cyan transition-colors">Community Coastal Cleanup Drive {i}</h3>
+                        <h3 className="text-xl font-bold text-ocean-deep dark:text-white mb-2 group-hover:text-primary-cyan transition-colors">{activity.title}</h3>
                         <p className="text-sm text-ocean-deep/60 dark:text-gray-400 line-clamp-2">
-                          Volunteers gathered to remove debris and plastic waste from the coastline, ensuring a safer habitat for marine life.
+                          {activity.description}
                         </p>
                       </div>
                     </div>
                   ))}
+                  {activities.length === 0 && (
+                    <div className="p-8 text-center text-gray-500 italic">No activities posted yet.</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -142,9 +147,6 @@ export const ChapterDetail: React.FC<ChapterDetailProps> = ({ chapter, onBack })
                         <Facebook size={20} />
                     </a>
                 )}
-                
-                <a href="#" className="p-2 rounded-full hover:bg-sky-500 hover:text-white transition-all text-ocean-deep/60 dark:text-gray-400"><Twitter size={20} /></a>
-                <a href="#" className="p-2 rounded-full hover:bg-pink-600 hover:text-white transition-all text-ocean-deep/60 dark:text-gray-400"><Instagram size={20} /></a>
               </div>
             </div>
 
@@ -152,15 +154,14 @@ export const ChapterDetail: React.FC<ChapterDetailProps> = ({ chapter, onBack })
             <div className="glass-card p-8 rounded-3xl reveal reveal-delay-400">
               <h3 className="text-xl font-bold text-ocean-deep dark:text-white mb-6">Chapter Leadership</h3>
               <div className="flex items-center gap-4 mb-4">
-                <img src={`https://ui-avatars.com/api/?name=${chapter.name.split(' ')[0]}+Head&background=random`} alt="Chapter Head" className="w-14 h-14 rounded-full" />
+                <div className="w-14 h-14 rounded-full bg-primary-blue/20 flex items-center justify-center text-primary-blue">
+                   <User size={24} />
+                </div>
                 <div>
-                  <h4 className="font-bold text-ocean-deep dark:text-white">Reymark Paimalan Nesperos</h4>
+                  <h4 className="font-bold text-ocean-deep dark:text-white">{chapter.president || 'Juan Dela Cruz'}</h4>
                   <p className="text-xs text-primary-blue dark:text-primary-cyan uppercase font-bold tracking-wider">Chapter President</p>
                 </div>
               </div>
-              <p className="text-sm text-ocean-deep/60 dark:text-gray-400 italic">
-                "Leading our community towards a greener tomorrow through dedicated action and education."
-              </p>
             </div>
 
             {/* Join CTA */}

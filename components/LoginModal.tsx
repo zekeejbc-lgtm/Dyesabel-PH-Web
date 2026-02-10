@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { X, Eye, EyeOff, User, Lock } from 'lucide-react';
+import { X, Eye, EyeOff, User, Lock, Info } from 'lucide-react';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLogin?: (username: string) => void;
 }
 
-export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [toast, setToast] = useState<{message: string, visible: boolean} | null>(null);
 
   // Handle animation states
   useEffect(() => {
@@ -23,6 +27,26 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
+  const handleForgotPassword = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setToast({ message: "Please contact the administrator or local chapter officer for assistance.", visible: true });
+    
+    // Hide toast after 4 seconds
+    setTimeout(() => {
+      setToast(prev => prev ? { ...prev, visible: false } : null);
+    }, 4000);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onLogin) {
+      onLogin(username);
+      // Reset form
+      setUsername('');
+      setPassword('');
+    }
+  };
+
   if (!isOpen && !isVisible) return null;
 
   return (
@@ -32,6 +56,22 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         className="absolute inset-0 bg-ocean-deep/80 backdrop-blur-md transition-opacity duration-300"
         onClick={onClose}
       ></div>
+
+      {/* Toast Notification */}
+      <div className={`absolute top-10 left-0 right-0 z-[110] flex justify-center pointer-events-none transition-all duration-500 ${toast?.visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}>
+        <div className="bg-ocean-deep text-white px-6 py-4 rounded-xl shadow-2xl border border-primary-cyan/30 flex items-center gap-3 backdrop-blur-xl max-w-sm mx-4 pointer-events-auto">
+          <div className="p-2 bg-primary-cyan/20 rounded-full text-primary-cyan">
+             <Info size={20} />
+          </div>
+          <p className="text-sm font-medium leading-tight">{toast?.message}</p>
+          <button 
+            onClick={() => setToast(prev => prev ? { ...prev, visible: false } : null)}
+            className="ml-2 text-white/50 hover:text-white transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      </div>
 
       {/* Modal Content - Dynamic sizing added */}
       <div 
@@ -47,11 +87,14 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
         {/* Header with Logo */}
         <div className="text-center mb-8">
-          <div className="w-24 h-24 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border border-ocean-deep/5 dark:border-white/10 p-4">
+          <div className="relative inline-block group cursor-default mb-6">
+             {/* Glow Effect matching Header mechanism */}
+             <div className="absolute inset-0 bg-primary-cyan/50 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+             
              <img 
                src="https://i.imgur.com/CQCKjQM.png" 
                alt="Dyesabel Logo" 
-               className="w-full h-full object-contain drop-shadow-md"
+               className="relative w-24 h-24 object-contain rounded-full z-10 drop-shadow-xl transform transition-transform duration-300"
              />
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-ocean-deep dark:text-white tracking-tight">Welcome Back</h2>
@@ -59,7 +102,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Form */}
-        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-5" onSubmit={handleSubmit}>
           <div className="space-y-1.5">
             <label className="text-sm font-bold text-ocean-deep dark:text-gray-300 ml-1">Username</label>
             <div className="relative group">
@@ -67,6 +110,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <input 
                 type="text" 
                 placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl py-3.5 pl-12 pr-4 text-ocean-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan/50 focus:border-primary-cyan transition-all font-medium placeholder:font-normal"
               />
             </div>
@@ -79,6 +124,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <input 
                 type={showPassword ? "text" : "password"} 
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl py-3.5 pl-12 pr-12 text-ocean-deep dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan/50 focus:border-primary-cyan transition-all font-medium placeholder:font-normal"
               />
               <button
@@ -90,9 +137,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               </button>
             </div>
             <div className="flex justify-end pt-1">
-              <a href="#" className="text-xs font-bold text-primary-blue dark:text-primary-cyan hover:underline hover:text-primary-cyan dark:hover:text-primary-blue transition-colors">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-xs font-bold text-primary-blue dark:text-primary-cyan hover:underline hover:text-primary-cyan dark:hover:text-primary-blue transition-colors focus:outline-none"
+              >
                 Forgot password?
-              </a>
+              </button>
             </div>
           </div>
 
@@ -102,6 +153,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           >
             Sign In
           </button>
+          
+          <div className="text-center text-xs text-gray-500 mt-2">
+            Demo Logins: "auditor", "admin", "head"
+          </div>
         </form>
       </div>
     </div>

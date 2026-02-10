@@ -20,6 +20,14 @@ export interface NavLink {
   isButton?: boolean;
 }
 
+export interface ChapterActivity {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  imageUrl: string;
+}
+
 export interface Chapter {
   id: string;
   name: string;
@@ -27,9 +35,11 @@ export interface Chapter {
   logo: string;
   image?: string; // Cover image for the chapter
   description?: string;
+  president?: string;
   email?: string;
   phone?: string;
   facebook?: string;
+  activities?: ChapterActivity[]; // Added for persistence
 }
 
 export interface PillarActivity {
@@ -48,4 +58,12 @@ export interface Pillar {
   aim: string;
   imageUrl: string;
   activities: PillarActivity[];
+}
+
+export type UserRole = 'auditor' | 'admin' | 'chapter_head';
+
+export interface User {
+  username: string;
+  role: UserRole;
+  chapterId?: string; // Only for chapter_head
 }

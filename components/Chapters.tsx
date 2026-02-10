@@ -2,75 +2,12 @@ import React from 'react';
 import { ArrowUpRight, MapPin } from 'lucide-react';
 import { Chapter } from '../types';
 
-export const chaptersData: Chapter[] = [
-  { 
-    id: 'tagum', 
-    name: 'Tagum Chapter', 
-    location: 'Tagum City, Davao del Norte', 
-    logo: 'https://i.imgur.com/CQCKjQM.png',
-    image: 'https://picsum.photos/seed/tagum/1200/600',
-    description: 'Leading the way in urban biodiversity conservation within Tagum City, focusing on sustainable waste management and green spaces.',
-    email: 'dyesabeltagum@gmail.com',
-    phone: '(084) 123-4567',
-    facebook: 'https://www.facebook.com/profile.php?id=61578133816723'
-  },
-  { 
-    id: 'nabunturan', 
-    name: 'Nabunturan Chapter', 
-    location: 'Nabunturan, Davao de Oro', 
-    logo: 'https://i.imgur.com/CQCKjQM.png',
-    image: 'https://picsum.photos/seed/nabunturan/1200/600',
-    description: 'Championing river rehabilitation and watershed protection in the heart of Davao de Oro.',
-    email: 'nabunturan@dyesabel.ph',
-    phone: '(088) 234-5678'
-  },
-  { 
-    id: 'mati', 
-    name: 'Mati Chapter', 
-    location: 'Mati City, Davao Oriental', 
-    logo: 'https://i.imgur.com/CQCKjQM.png',
-    image: 'https://picsum.photos/seed/mati/1200/600',
-    description: 'Protectors of our coastal heritage, the Mati Chapter focuses on marine life conservation and sustainable tourism.',
-    email: 'mati@dyesabel.ph',
-    phone: '(087) 345-6789'
-  },
-  { 
-    id: 'mabini', 
-    name: 'Mabini Chapter', 
-    location: 'Mabini, Davao de Oro', 
-    logo: 'https://i.imgur.com/CQCKjQM.png',
-    image: 'https://picsum.photos/seed/mabini/1200/600',
-    description: 'Empowering local communities through agro-forestry and sustainable livelihood programs.',
-    email: 'mabini@dyesabel.ph',
-    phone: '(088) 456-7890'
-  },
-  { 
-    id: 'maco', 
-    name: 'Maco Chapter', 
-    location: 'Maco, Davao de Oro', 
-    logo: 'https://i.imgur.com/CQCKjQM.png',
-    image: 'https://picsum.photos/seed/maco/1200/600',
-    description: 'Advocating for responsible mining practices and reforestation in the mineral-rich areas of Maco.',
-    email: 'maco@dyesabel.ph',
-    phone: '(088) 567-8901'
-  },
-  { 
-    id: 'new-corella', 
-    name: 'New Corella Chapter', 
-    location: 'New Corella, Davao del Norte', 
-    logo: 'https://i.imgur.com/CQCKjQM.png',
-    image: 'https://picsum.photos/seed/corella/1200/600',
-    description: 'Guardians of the highland springs and waterfalls, ensuring clean water access for all.',
-    email: 'newcorella@dyesabel.ph',
-    phone: '(084) 678-9012'
-  },
-];
-
 interface ChaptersProps {
+  chapters: Chapter[];
   onSelectChapter: (chapter: Chapter) => void;
 }
 
-export const Chapters: React.FC<ChaptersProps> = ({ onSelectChapter }) => {
+export const Chapters: React.FC<ChaptersProps> = ({ chapters, onSelectChapter }) => {
   return (
     <section id="chapters" className="py-24 relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
@@ -85,7 +22,7 @@ export const Chapters: React.FC<ChaptersProps> = ({ onSelectChapter }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {chaptersData.map((chapter, index) => (
+          {chapters.map((chapter, index) => (
             <div 
               key={chapter.id} 
               onClick={() => onSelectChapter(chapter)}
@@ -101,7 +38,7 @@ export const Chapters: React.FC<ChaptersProps> = ({ onSelectChapter }) => {
                  />
               </div>
               
-              {/* Text Info - Updated to allow wrapping and dynamic sizing */}
+              {/* Text Info */}
               <div className="flex-grow min-w-0 flex flex-col justify-center">
                 <h3 className="text-lg md:text-xl font-bold text-ocean-deep dark:text-white group-hover:text-primary-blue dark:group-hover:text-primary-cyan transition-colors leading-tight break-words">
                   {chapter.name}
